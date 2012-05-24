@@ -1,0 +1,256 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+    <link rel="stylesheet" href="/stylesheets/style.css">
+    <title>Los numeros</title>
+    <script type = "text/javascript" src = "/static/jquery-1.7.1.min.js"></script>
+    <script type = "text/javascript" src = "/static/jquery-ui-1.8.18.custom.min.js"></script>
+    
+</head>
+
+
+
+
+<script>
+$(document).ready(function(){
+	
+    number_list = ['cero','uno','dos','tres','cuatro','cinco', 'seis', 'siete', 'ocho','nueve','diez','once','doce','trece','catorce','quince','dieciseis','diecisiete','dieciocho','diecinueve','veinte'];
+    highscore = 0;
+    newgame(); 
+    voice = true;
+    
+});
+
+function newgame() {
+	reorder();
+	game = true;
+  
+	score = parseInt(0);
+	$('#score_panel').html(0);
+	$('#container').children().css('background','white');
+	$('#time_panel').css('color','black');
+  getNumber();
+  addClickHandler();
+  count = 30;
+  counter = 0;
+  counter = setInterval("timer()", 1000);//will run every 1 second.
+  loadhighscore();
+};
+
+
+
+
+//Get a random number and display it on the page. If sound is turned on, then also play the sound file
+function getNumber(){
+	if (game == true){
+	   randomnumber = Math.floor(Math.random() * 21);
+	   sound_file =  "/static/" + "number" + randomnumber + ".wav"
+	   var snd = new Audio(sound_file);
+	   snd.volume = 1.0;
+	   snd.play();
+	   
+	   $('#selected_word').html(number_list[randomnumber]);
+	   
+	}
+    else {
+       gameover();
+       	
+    }
+
+};
+
+function addClickHandler(){
+	$(".number").click(function() {check($(this).html(), $(this))});
+  $("#new_game").click(function() {newgame()});
+  $("#hide").click(function() {$('#selected_word').toggle()});
+  
+  
+};
+//This function will check and see if the user clicked the right box.
+function check(number, that){
+	if (number == randomnumber){
+		Score();
+		getNumber();
+		that.effect('highlight',{'color': 'blue'}, 5000);
+    
+    
+	}
+	else {
+		that.effect('highlight',{'color': 'red'}, 5000);
+
+	}
+};
+
+function Score(){
+	score = score + 5;
+	$('#score_panel').html(score);
+	
+
+};
+
+function timer()
+{
+  count=count-1;
+  if (count < 4) {
+  	$('#time_panel').css('color','red');
+  }
+  if (count == 3){
+  	var snd = new Audio('/static/wave.wav');
+	snd.volume = 0.2;
+	snd.play();
+  }
+
+  if (count <= 0)
+  {
+     clearInterval(counter);
+     gameover();
+    
+  }
+
+  $('#time_panel').html(count);
+}
+
+//Reorder the number boxes after each correct answer
+function reorder() {
+           var grp = $("#container").children();
+           var cnt = grp.length;
+
+           var temp,x;
+           for (var i = 0; i < cnt; i++) {
+               temp = grp[i];
+             x = Math.floor(Math.random() * cnt);
+             grp[i] = grp[x];
+             grp[x] = temp;
+         }
+         $(grp).remove();
+         $("#container").append($(grp));
+}
+//Need a way to save the game to localStorage.
+function gameover() {
+	game = false;
+	score = parseInt($('#score_panel').html());
+	highscore = localStorage.getItem('highscore',score)
+	$('#container').children().unbind('click');
+	$('#score_panel').css('border','4px solid blue');
+	if (score > highscore){
+		highscore = score;
+		localStorage.setItem('highscore',score);
+		
+	}
+    
+}
+
+function loadhighscore() {
+	if (localStorage.getItem('highscore')){
+     
+		$('#highscore_panel').html(localStorage.getItem('highscore'));
+	}
+  $('#highscore_panel').html(localStorage.getItem('highscore'));
+
+   
+   
+}
+
+
+
+
+
+
+</script>
+
+
+
+
+
+<body>
+  
+  <div id = "container">
+     <div id = "box_0" class = "number">
+     0
+     </div>
+     <div id = "box_1" class = "number">
+     1
+     </div>
+     <div id = "box_2" class = "number">
+     2
+     </div>
+     <div id = "box_3" class = "number">
+     3
+     </div>
+     <div id = "box_4" class = "number">
+     4
+     </div>
+     <div id = "box_5" class = "number">
+     5
+     </div>
+     <div id = "box_6" class = "number">
+     6
+     </div>
+     <div id = "box_7" class = "number">
+     7
+     </div>
+     <div id = "box_8" class = "number">
+     8
+     </div>
+     <div id = "box_9" class = "number">
+     9
+     </div>
+     <div id = "box_10" class = "number">
+     10
+     </div>
+     <div id = "box_11" class = "number">
+     11
+     </div>
+     <div id = "box_12" class = "number">
+     12
+     </div>
+     <div id = "box_13" class = "number">
+     13
+     </div>
+     <div id = "box_14" class = "number">
+     14
+     </div>
+     <div id = "box_15" class = "number">
+     15
+     </div>
+     <div id = "box_16" class = "number">
+     16
+     </div>
+     <div id = "box_17" class = "number">
+     17
+     </div>
+     <div id = "box_18" class = "number">
+     18
+     </div>
+     <div id = "box_19" class = "number">
+     19
+     </div>
+     <div id = "box_20" class = "number">
+     20
+     </div>
+
+
+
+
+  </div>
+  <div id = "score_panel">
+   0 
+  </div>
+  <input type = "submit" id = "new_game" class = "button" value = "Juego">
+  <div id = "highscore_panel">
+   
+  </div>
+  <div id = "selected_word">
+   
+  </div>
+  <div id = "time_panel">
+      
+  </div>
+  <div id = "hide">
+    -
+  </div>
+  
+
+</body>
+
+</html>
